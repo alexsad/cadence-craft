@@ -6,7 +6,7 @@ const appendToString = (text: string, appendText: string, positionIndex: number)
 
 const genUUID = () => {
     if (globalThis?.crypto && 'randomUUID' in globalThis.crypto) {
-        return `uuid_${globalThis.crypto.randomUUID()}`.replaceAll("-", "_");
+        return `uuid_${globalThis.crypto.randomUUID()}`.replace("-", "_");
     }
     const stringRandom = (new Date()).getTime().toString(36) + Math.random().toString(36).slice(2);
     return appendToString(stringRandom, '_', 5);
