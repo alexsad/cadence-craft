@@ -229,7 +229,6 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
     updateNote: (note: INoteKey) => {
         const { _notes } = get()
         _notes.set(note.noteIndex, note)
-
         set({
             _notes,
         })
@@ -237,3 +236,4 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
 }))
 
 export { useNotesStore };
+

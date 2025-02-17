@@ -1,5 +1,6 @@
 import React from "react"
 import { INoteKey } from "../../models/note-key"
+import { useNoteStore } from "../../stores/useNoteStore"
 
 const keyNoteStyle: React.CSSProperties = {
     height: '14rem',
@@ -13,6 +14,7 @@ const keyNoteStyle: React.CSSProperties = {
     borderRadius: '0 0 5px 5px',
     position: 'relative',
     cursor: 'pointer',
+    color: '#000',
 }
 
 const adjacentNoteStyle: React.CSSProperties = {
@@ -40,16 +42,17 @@ const leftNoteStyle: React.CSSProperties = {
 
 const SubKeyBoardNote: React.FC<{
     noteItem: INoteKey,
-    onPress: (evt: React.TouchEvent<HTMLDivElement>) => void,
+    onPress: (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
     style?: React.CSSProperties,
 }> = ({
     style,
     noteItem,
     onPress,
 }) => {
+        const { setCurrNote } = useNoteStore.getState()
 
         const stop = async () => {
-            // await audioCenterInstance.stop()
+            setCurrNote(undefined)
         }
 
         return (
@@ -59,6 +62,7 @@ const SubKeyBoardNote: React.FC<{
                     ...style,
                 }}
                 onTouchStart={onPress}
+                onMouseDown={onPress}
                 onMouseUp={stop}
             >
                 <span>
@@ -71,37 +75,22 @@ const SubKeyBoardNote: React.FC<{
         )
     }
 
-let audioContext = new AudioContext();
-
 const PianoKeyBoardNote: React.FC<{
     noteItem: INoteKey,
     rightSlot?: INoteKey,
     leftSlot?: INoteKey,
 }> = (props) => {
 
-    const playKey = (note: INoteKey) => async (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        // evt.preventDefault()
-        evt.stopPropagation()
-        // await audioCenterInstance.stop()
-        // audioCenterInstance.loop = false
-        // audioCenterInstance.volume = 1
-        // audioCenterInstance.src = note.path
-        // await audioCenterInstance.play()
+    const { setCurrNote } = useNoteStore.getState()
 
-        if (note.audioBuffer) {
-            if (audioContext.state === 'running') {
-                await audioContext.close()
-                audioContext = new AudioContext();
-            }
-            const source = audioContext.createBufferSource();
-            source.buffer = note.audioBuffer;
-            source.connect(audioContext.destination);
-            source.start();
-        }
+    const playKey = (note: INoteKey) => async (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        evt.stopPropagation()
+        setCurrNote(note)
     }
 
     const stop = async () => {
         // await audioCenterInstance.stop()
+        setCurrNote(undefined)
     }
 
     return (
@@ -136,3 +125,4 @@ const PianoKeyBoardNote: React.FC<{
 }
 
 export { PianoKeyBoardNote }
+

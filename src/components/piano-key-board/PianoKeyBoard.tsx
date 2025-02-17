@@ -11,6 +11,7 @@ const pianoKeyBoardStyle: React.CSSProperties = {
 
 const PianoKeyBoard: React.FC = () => {
     const { getNotes, updateNote } = useNotesStore.getState()
+
     const noteKeys = getNotes()
 
     useMount(async () => {
@@ -47,3 +48,4 @@ const PianoKeyBoard: React.FC = () => {
 }
 
 export { PianoKeyBoard }
+
