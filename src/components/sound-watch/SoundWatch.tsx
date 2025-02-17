@@ -18,6 +18,7 @@ const SoundWatch: React.FC = () => {
             if (currNote?.audioBuffer) {
                 lastSource.current = audioContext.createBufferSource();
                 lastSource.current.buffer = currNote.audioBuffer;
+                lastSource.current.loop = true
                 lastSource.current.connect(audioContext.destination);
                 lastSource.current.start();
             }

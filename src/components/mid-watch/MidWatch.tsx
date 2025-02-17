@@ -13,9 +13,14 @@ const MidWatch: React.FC = () => {
             for (const input of inputs.values()) {
                 input.onmidimessage = midiMessage => {
                     if (midiMessage?.data?.length) {
-                        const [, noteIndex = 0, velocity = 0] = midiMessage.data;
+                        const [status, noteIndex = 0, velocity = 0] = midiMessage.data;
                         console.log('Nota:', noteIndex, 'Velocidade:', velocity);
-                        setCurrNote(getNoteByIndex(noteIndex))
+                        if ((status & 0xf0) === 0x80 || ((status & 0xf0) === 0x90 && velocity === 0)) {
+                            console.log(`Tecla solta: ${noteIndex}`);
+                            setCurrNote(undefined)
+                        } else {
+                            setCurrNote(getNoteByIndex(noteIndex))
+                        }
                     }
                 };
             }
