@@ -4,8 +4,8 @@ import { PianoKeyBoardNote } from "./PianoKeyBoardNote"
 
 const pianoKeyBoardStyle: React.CSSProperties = {
     border: '1px solid #000',
-    width: 'calc(100vw - 4rem)',
-    height: '60vh',
+    width: '40rem',
+    height: '15rem',
     display: 'flex',
 }
 
@@ -23,7 +23,6 @@ const PianoKeyBoard: React.FC = () => {
                 .then(decodedBuffer => {
                     note.audioBuffer = decodedBuffer
                     updateNote(note)
-                    console.log('Áudio carregado e armazenado em buffer!');
                 })
                 .catch(err => {
                     console.log(note.code, err)

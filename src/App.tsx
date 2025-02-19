@@ -8,10 +8,10 @@ import { Start } from './start/Start'
 function App() {
   return (
     <Start>
+      <TrackRecord />
       <PianoKeyBoard />
       <MidWatch />
       <SoundWatch />
-      <TrackRecord />
     </Start>
   )
 }

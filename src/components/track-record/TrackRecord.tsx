@@ -8,12 +8,12 @@ const TrackRecord: React.FC = () => {
     const { setCurrNote } = useNoteStore.getState()
     const tracks = useRecordStore(state => state._tracks)
     const [isProcessing, setIsProcessing] = useState(false)
+    const [showTracks, setShowTracks] = useState(false)
 
     const playRecord = async () => {
         setIsProcessing(true)
         const tracks = getTracks()
         for await (const track of tracks) {
-            console.log(track)
             setCurrNote({
                 ...track,
                 duration: 0,
@@ -38,14 +38,18 @@ const TrackRecord: React.FC = () => {
             }
         })
         return sub
-    }, [isProcessing])
+    }, [addNote, isProcessing])
 
     return (
         <div>
-            <button onClick={playRecord} disabled={isProcessing}>Play</button>
-            <button onClick={clearTracks} disabled={isProcessing}>Clear</button>
-            record:
-            {JSON.stringify(tracks)}
+            <button onClick={playRecord} disabled={isProcessing || tracks.length === 0}>Play</button>
+            <button onClick={clearTracks} disabled={isProcessing || tracks.length === 0}>Clear</button>
+            <button onClick={() => setShowTracks(!showTracks)}>Tracks</button>
+            {showTracks && (
+                <p>
+                    {JSON.stringify(tracks)}
+                </p>
+            )}
         </div>
     )
 }

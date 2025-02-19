@@ -13,10 +13,6 @@ const SoundWatch: React.FC = () => {
         useNoteStore.subscribe(async ({ getCurrNote }) => {
             const track = getCurrNote()
             const currNote = getNoteByIndex(track?.noteIndex || 0)
-            console.log('cur-note:', {
-                currNote,
-                track,
-            })
             if (audioContext.state === 'running') {
                 lastSource.current?.stop()
                 await audioContext.close()

@@ -3,7 +3,7 @@ import { useNoteStore } from "../../stores/useNoteStore";
 import { useMount } from "../../util/use-mount";
 
 const MidWatch: React.FC = () => {
-    const { setCurrNote } = useNoteStore.getState()
+    const { setCurrNote, getCurrNote } = useNoteStore.getState()
     const { getNoteByIndex } = useNotesStore.getState()
     // const lastNote = useNoteStore(state => state.getCurrNote())
 
@@ -14,12 +14,26 @@ const MidWatch: React.FC = () => {
                 input.onmidimessage = midiMessage => {
                     if (midiMessage?.data?.length) {
                         const [status, noteIndex = 0, velocity = 0] = midiMessage.data;
-                        console.log('Nota:', noteIndex, 'Velocidade:', velocity);
+                        // console.log('Nota:', noteIndex, 'Velocidade:', velocity);
                         if ((status & 0xf0) === 0x80 || ((status & 0xf0) === 0x90 && velocity === 0)) {
                             console.log(`Tecla solta: ${noteIndex}`);
+                            const currNote = getCurrNote()
+                            if (currNote) {
+                                setCurrNote({
+                                    ...currNote,
+                                    duration: new Date().getTime() - currNote.startAt
+                                })
+                            }
                             setCurrNote(undefined)
                         } else {
-                            setCurrNote(getNoteByIndex(noteIndex))
+                            const note = getNoteByIndex(noteIndex)
+                            if (note) {
+                                setCurrNote({
+                                    ...note,
+                                    audioBuffer: undefined,
+                                    startAt: new Date().getTime(),
+                                })
+                            }
                         }
                     }
                 };
