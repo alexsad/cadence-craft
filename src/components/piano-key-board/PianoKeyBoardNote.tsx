@@ -43,16 +43,16 @@ const leftNoteStyle: React.CSSProperties = {
 const SubKeyBoardNote: React.FC<{
     noteItem: INoteKey,
     onPress: (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => void,
+    onRelease: (note: INoteKey) => void,
     style?: React.CSSProperties,
 }> = ({
     style,
     noteItem,
     onPress,
+    onRelease,
 }) => {
-        const { setCurrNote } = useNoteStore.getState()
-
         const stop = async () => {
-            setCurrNote(undefined)
+            onRelease(noteItem)
         }
 
         return (
@@ -81,15 +81,25 @@ const PianoKeyBoardNote: React.FC<{
     leftSlot?: INoteKey,
 }> = (props) => {
 
-    const { setCurrNote } = useNoteStore.getState()
+    const { setCurrNote, getCurrNote } = useNoteStore.getState()
 
     const playKey = (note: INoteKey) => async (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         evt.stopPropagation()
-        setCurrNote(note)
+        setCurrNote({
+            ...note,
+            audioBuffer: undefined,
+            startAt: new Date().getTime(),
+        })
     }
 
-    const stop = async () => {
-        // await audioCenterInstance.stop()
+    const onRelease = () => {
+        const currNote = getCurrNote()
+        if (currNote) {
+            setCurrNote({
+                ...currNote,
+                duration: new Date().getTime() - currNote.startAt
+            })
+        }
         setCurrNote(undefined)
     }
 
@@ -98,13 +108,14 @@ const PianoKeyBoardNote: React.FC<{
             style={keyNoteStyle}
             onTouchStart={playKey(props.noteItem)}
             onMouseDown={playKey(props.noteItem)}
-            onMouseUp={stop}
+            onMouseUp={onRelease}
         >
             {props.leftSlot && (
                 <SubKeyBoardNote
                     style={leftNoteStyle}
                     noteItem={props.leftSlot}
                     onPress={playKey(props.leftSlot)}
+                    onRelease={onRelease}
                 />
             )}
             <span>
@@ -118,6 +129,7 @@ const PianoKeyBoardNote: React.FC<{
                     style={rightNoteStyle}
                     noteItem={props.rightSlot}
                     onPress={playKey(props.rightSlot)}
+                    onRelease={onRelease}
                 />
             )}
         </div>

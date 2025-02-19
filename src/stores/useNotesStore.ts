@@ -222,9 +222,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
     },
     getNoteByIndex: (noteIndex: number) => {
         const note = get()._notes.get(noteIndex)
-        if (note) {
-            return cloneObject(note)
-        }
+        return note
     },
     updateNote: (note: INoteKey) => {
         const { _notes } = get()
