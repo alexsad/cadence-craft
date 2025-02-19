@@ -27,6 +27,9 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
     getTracks() {
         const { _tracks } = get()
         const [firstNote] = _tracks
+        if (!_tracks.length) {
+            return []
+        }
         return cloneObject(
             _tracks.reduce((prev, curr, currentIndex) => {
                 const startAt = curr.startAt - firstNote.startAt

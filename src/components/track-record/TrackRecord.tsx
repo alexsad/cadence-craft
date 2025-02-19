@@ -4,7 +4,7 @@ import { useRecordStore } from "../../stores/useRecordStore"
 import { sleep } from "../../util/sleep"
 
 const TrackRecord: React.FC = () => {
-    const { addNote, getTracks } = useRecordStore.getState()
+    const { addNote, getTracks, clear } = useRecordStore.getState()
     const { setCurrNote } = useNoteStore.getState()
     const tracks = useRecordStore(state => state._tracks)
     const [isProcessing, setIsProcessing] = useState(false)
@@ -24,6 +24,12 @@ const TrackRecord: React.FC = () => {
         setIsProcessing(false)
     }
 
+    const clearTracks = async () => {
+        setIsProcessing(true)
+        await clear()
+        setIsProcessing(false)
+    }
+
     useEffect(() => {
         const sub = useNoteStore.subscribe(({ getCurrNote }) => {
             const currNote = getCurrNote()
@@ -37,6 +43,7 @@ const TrackRecord: React.FC = () => {
     return (
         <div>
             <button onClick={playRecord} disabled={isProcessing}>Play</button>
+            <button onClick={clearTracks} disabled={isProcessing}>Clear</button>
             record:
             {JSON.stringify(tracks)}
         </div>
