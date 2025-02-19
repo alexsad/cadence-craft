@@ -6,7 +6,7 @@ import { cloneObject } from "../util/clone_object";
 interface IUseRecordStore {
     _tracks: INoteKey[],
     addNote: (note: INoteKey) => void,
-    getTrack: () => INoteKey[],
+    getTracks: () => INoteKey[],
     clear: () => Promise<void>,
 }
 
@@ -24,8 +24,35 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
             ]
         }))
     },
-    getTrack() {
-        return cloneObject(get()._tracks)
+    getTracks() {
+        const { _tracks } = get()
+        const [firstNote] = _tracks
+        return cloneObject(
+            _tracks.reduce((prev, curr, currentIndex) => {
+                const startAt = curr.startAt - firstNote.startAt
+                prev.push({
+                    ...curr,
+                    startAt,
+                })
+                const nextIndex = currentIndex + 1
+                if (nextIndex < _tracks.length) {
+                    const nextTrack = _tracks[nextIndex]
+                    const nextStartAt = startAt + curr.duration
+                    const nextTrackStartAt = (nextTrack.startAt - firstNote.startAt)
+                    const duration = nextTrackStartAt - nextStartAt
+
+                    prev.push({
+                        noteIndex: 0,
+                        code: '',
+                        path: '',
+                        volume: 0,
+                        duration,
+                        startAt: nextStartAt,
+                    })
+                }
+                return prev
+            }, [] as INoteKey[])
+        )
     },
     clear: async () => {
         set({
