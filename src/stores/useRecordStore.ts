@@ -21,7 +21,6 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
                 {
                     ...note,
                     audioBuffer: undefined,
-                    path: '',
                 },
             ]
         }))
@@ -49,7 +48,7 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
                     prev.push({
                         noteIndex: 0,
                         code: '',
-                        path: '',
+                        path: '/samples/default/silent_quarter-second.wav',
                         volume: 0,
                         duration,
                         startAt: nextStartAt,

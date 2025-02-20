@@ -4,12 +4,15 @@ import { PianoKeyBoard } from './components/piano-key-board/PianoKeyBoard'
 import { SoundWatch } from './components/sound-watch/SoundWatch'
 import { TrackRecord } from './components/track-record/TrackRecord'
 import { Start } from './start/Start'
+import { Flex } from './ui/flex'
 
 function App() {
   return (
     <Start>
-      <TrackRecord />
-      <PianoKeyBoard />
+      <Flex vertical>
+        <PianoKeyBoard />
+        <TrackRecord />
+      </Flex>
       <MidWatch />
       <SoundWatch />
     </Start>

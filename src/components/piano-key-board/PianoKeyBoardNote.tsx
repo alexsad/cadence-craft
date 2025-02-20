@@ -1,15 +1,12 @@
 import React from "react"
 import { INoteKey } from "../../models/note-key"
 import { useNoteStore } from "../../stores/useNoteStore"
+import { Flex } from "../../ui/flex"
 
 const keyNoteStyle: React.CSSProperties = {
     height: '14rem',
     width: '4rem',
     border: '1px solid #000',
-    display: "flex",
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'end',
     backgroundColor: '#fff',
     borderRadius: '0 0 5px 5px',
     position: 'relative',
@@ -24,6 +21,9 @@ const contantNoteStyle: React.CSSProperties = {
     width: '100%',
     height: '100%',
     backgroundColor: 'yellowgreen',
+    display: 'flex',
+    justifyContent: 'end',
+    flexDirection: 'column',
 }
 
 const adjacentNoteStyle: React.CSSProperties = {
@@ -123,7 +123,7 @@ const PianoKeyBoardNote: React.FC<{
     }
 
     return (
-        <div
+        <Flex
             style={keyNoteStyle}
         >
             {props.leftSlot && (
@@ -152,7 +152,7 @@ const PianoKeyBoardNote: React.FC<{
                     onRelease={onRelease}
                 />
             )}
-        </div>
+        </Flex>
     )
 }
 

@@ -6,17 +6,19 @@ const Flex: React.FC<{
     align?: string,
     gap?: string,
     wrap?: 'nowrap' | 'wrap',
+    padding?: string,
     style?: React.CSSProperties,
     className?: string,
-} & ReactProps> = ({ children, className, style, gap, justify, align, vertical, wrap }) => {
+} & ReactProps> = ({ children, className, style, gap, justify, align, vertical, wrap, padding }) => {
     const mergedStyle: React.CSSProperties = {
         ...style,
         display: 'flex',
         gap: gap,
         justifyContent: justify?.includes('end') ? 'flex-end' : justify,
         alignItems: align,
-        flexDirection: !!vertical ? 'column' : 'row',
-        flexWrap: !!wrap ? wrap : 'nowrap',
+        flexDirection: vertical ? 'column' : 'row',
+        flexWrap: wrap ? wrap : 'nowrap',
+        padding: padding,
     }
     return (
         <div

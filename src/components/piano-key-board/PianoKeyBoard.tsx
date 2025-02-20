@@ -3,7 +3,7 @@ import { useMount } from "../../util/use-mount"
 import { PianoKeyBoardNote } from "./PianoKeyBoardNote"
 
 const pianoKeyBoardStyle: React.CSSProperties = {
-    border: '1px solid #000',
+    borderTop: '1px solid #000',
     width: '40rem',
     height: '15rem',
     display: 'flex',

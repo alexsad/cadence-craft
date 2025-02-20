@@ -1,15 +1,15 @@
 import { INoteKey } from "../models/note-key";
 
 function exportWAV(audioBuffer: AudioBuffer) {
-    let numOfChannels = audioBuffer.numberOfChannels;
-    let sampleRate = audioBuffer.sampleRate;
-    let numOfSamples = audioBuffer.length;
+    const numOfChannels = audioBuffer.numberOfChannels;
+    const sampleRate = audioBuffer.sampleRate;
+    const numOfSamples = audioBuffer.length;
 
-    let wavBuffer = new ArrayBuffer(44 + numOfSamples * numOfChannels * 2);
-    let view = new DataView(wavBuffer);
+    const wavBuffer = new ArrayBuffer(44 + numOfSamples * numOfChannels * 2);
+    const view = new DataView(wavBuffer);
 
     // Escrevendo o cabeçalho WAV
-    let writeString = (offset: number, type: string) => {
+    const writeString = (offset: number, type: string) => {
         for (let i = 0; i < type.length; i++) {
             view.setUint8(offset + i, type.charCodeAt(i));
         }
@@ -33,7 +33,7 @@ function exportWAV(audioBuffer: AudioBuffer) {
     let offset = 44;
     for (let i = 0; i < numOfSamples; i++) {
         for (let channel = 0; channel < numOfChannels; channel++) {
-            let sample = Math.max(-1, Math.min(1, audioBuffer.getChannelData(channel)[i]));
+            const sample = Math.max(-1, Math.min(1, audioBuffer.getChannelData(channel)[i]));
             view.setInt16(offset, sample * 0x7FFF, true);
             offset += 2;
         }
@@ -45,9 +45,9 @@ function exportWAV(audioBuffer: AudioBuffer) {
 
 async function concatenateAudio(audioList: INoteKey[]) {
     const audioContext = new AudioContext();
-    let totalDuration = audioList.reduce((sum, { duration }) => sum + duration, 0);
+    const totalDuration = audioList.reduce((sum, { duration }) => sum + duration, 0);
 
-    let finalBuffer = audioContext.createBuffer(
+    const finalBuffer = audioContext.createBuffer(
         1,
         audioContext.sampleRate * (totalDuration / 1000),
         audioContext.sampleRate
@@ -55,9 +55,9 @@ async function concatenateAudio(audioList: INoteKey[]) {
 
     let currentOffset = 0;
 
-    for (let { path: soundURL, duration } of audioList) {
-        let arrayBuffer = await fetch(soundURL).then(res => res.arrayBuffer());
-        let audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    for (const { path: soundURL, duration } of audioList) {
+        const arrayBuffer = await fetch(soundURL).then(res => res.arrayBuffer());
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
         finalBuffer.copyToChannel(audioBuffer.getChannelData(0), 0, currentOffset);
         currentOffset += audioContext.sampleRate * (duration / 1000);
