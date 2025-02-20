@@ -9,7 +9,7 @@ interface IUseRecordStore {
     addNote: (note: INoteKey) => void,
     getTracks: () => INoteKey[],
     clear: () => Promise<void>,
-    normalizeTracks: (bpm: number) => Promise<void>,
+    getNormalizeTracks: (bpm: number) => INoteKey[],
 }
 
 const useRecordStore = create<IUseRecordStore>((set, get) => ({
@@ -64,15 +64,13 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
             _tracks: [],
         })
     },
-    normalizeTracks: async (bpm: number) => {
+    getNormalizeTracks(bpm: number) {
         const { getTracks } = get()
         const tracks = getTracks()
-        set({
-            _tracks: tracks.map(track => ({
-                ...track,
-                duration: bpmToMiliseconds(bpm),
-            })).filter(track => track.noteIndex > 0)
-        })
+        return tracks.map(track => ({
+            ...track,
+            duration: bpmToMiliseconds(bpm),
+        })).filter(track => track.noteIndex > 0)
     }
 }))
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useNoteStore } from "../../stores/useNoteStore"
 import { useRecordStore } from "../../stores/useRecordStore"
-import { sleep } from "../../util/sleep"
+import { concatenateAudio } from "../../util/concatenate-audio"
 
 const trackRecordTimeLineStyle: React.CSSProperties = {
     border: '1px solid red',
@@ -62,30 +62,31 @@ const TrackRecordTimeLine: React.FC = () => {
 
 
 const TrackRecord: React.FC = () => {
-    const { addNote, getTracks, clear, normalizeTracks } = useRecordStore.getState()
-    const { setCurrNote } = useNoteStore.getState()
+    const { addNote, getTracks, clear, getNormalizeTracks } = useRecordStore.getState()
     const tracksCount = useRecordStore(state => state._tracks.length)
     const [isProcessing, setIsProcessing] = useState(false)
     const bpmnRef = useRef<HTMLInputElement>(null)
+    const audioRef = useRef<HTMLAudioElement>(null)
 
-    const onNormalizeTrack = async () => {
+    const playRecord = (type: 'RAW' | 'NORMALIZED') => async () => {
+
+        setIsProcessing(true)
         const bpm = Number(bpmnRef.current?.value || 100)
-        setIsProcessing(true)
-        await normalizeTracks(bpm)
-        setIsProcessing(false)
-    }
+        const tracks = type === 'RAW' ? getTracks() : getNormalizeTracks(bpm)
 
-    const playRecord = async () => {
-        setIsProcessing(true)
-        const tracks = getTracks()
-        for await (const track of tracks) {
-            setCurrNote({
-                ...track,
-                duration: 0,
-            })
-            await sleep(track.duration / 1000)
-            setCurrNote(undefined)
+        const blob = await concatenateAudio(
+            tracks
+        )
+
+        let url = URL.createObjectURL(blob);
+        // Criar o elemento de áudio e adicionar à página
+        let audio = audioRef.current;
+        if (audio) {
+            audio.controls = true;
+            audio.src = url;
+            await audio.play().catch(e => console.error('Erro ao reproduzir áudio:', e));
         }
+
         setIsProcessing(false)
     }
 
@@ -110,19 +111,23 @@ const TrackRecord: React.FC = () => {
             <div style={{
                 display: 'flex',
             }}>
-                <button onClick={playRecord} disabled={isProcessing || tracksCount === 0}>Play</button>
+                <label>
+                    BPM:
+                    <input
+                        type="number"
+                        min={20}
+                        max={200}
+                        name="bpm"
+                        defaultValue={100}
+                        ref={bpmnRef}
+                        disabled={isProcessing || tracksCount === 0}
+                    />
+                </label>
+                <button onClick={playRecord('RAW')} disabled={isProcessing || tracksCount === 0}>Play</button>
+                <button onClick={playRecord('NORMALIZED')} disabled={isProcessing || tracksCount === 0}>Play Normalized</button>
                 <button onClick={clearTracks} disabled={isProcessing || tracksCount === 0}>Clear</button>
-                <input
-                    type="number"
-                    min={20}
-                    max={200}
-                    name="bpm"
-                    defaultValue={100}
-                    ref={bpmnRef}
-                    disabled={isProcessing || tracksCount === 0}
-                />
-                <button onClick={onNormalizeTrack}>normalize</button>
             </div>
+            <audio ref={audioRef} />
             <TrackRecordTimeLine />
         </div>
     )
