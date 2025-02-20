@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { INoteKey } from "../models/note-key";
+import { bpmToMiliseconds } from "../util/bpm-to-duration";
 import { cloneObject } from "../util/clone_object";
 
 
@@ -8,6 +9,7 @@ interface IUseRecordStore {
     addNote: (note: INoteKey) => void,
     getTracks: () => INoteKey[],
     clear: () => Promise<void>,
+    normalizeTracks: (bpm: number) => Promise<void>,
 }
 
 const useRecordStore = create<IUseRecordStore>((set, get) => ({
@@ -62,6 +64,16 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
             _tracks: [],
         })
     },
+    normalizeTracks: async (bpm: number) => {
+        const { getTracks } = get()
+        const tracks = getTracks()
+        set({
+            _tracks: tracks.map(track => ({
+                ...track,
+                duration: bpmToMiliseconds(bpm),
+            })).filter(track => track.noteIndex > 0)
+        })
+    }
 }))
 
 export { useRecordStore };
