@@ -10,6 +10,7 @@ interface IUseRecordStore {
     getTracks: () => INoteKey[],
     clear: () => Promise<void>,
     getNormalizeTracks: (bpm: number) => INoteKey[],
+    setTracks: (tracks: INoteKey[]) => void,
 }
 
 const useRecordStore = create<IUseRecordStore>((set, get) => ({
@@ -24,6 +25,11 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
                 },
             ]
         }))
+    },
+    setTracks(tracks: INoteKey[]) {
+        set({
+            _tracks: tracks,
+        })
     },
     getTracks() {
         const { _tracks } = get()
@@ -66,10 +72,13 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
     getNormalizeTracks(bpm: number) {
         const { getTracks } = get()
         const tracks = getTracks()
-        return tracks.map(track => ({
+        const regularDuration = bpmToMiliseconds(bpm)
+        const startDate = new Date().getTime()
+        return tracks.filter(track => track.noteIndex > 0).map((track, trackIndex) => ({
             ...track,
-            duration: bpmToMiliseconds(bpm),
-        })).filter(track => track.noteIndex > 0)
+            duration: regularDuration,
+            startAt: startDate + (trackIndex * regularDuration),
+        }))
     }
 }))
 
