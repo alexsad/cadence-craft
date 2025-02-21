@@ -50,6 +50,7 @@ const TrackRecord: React.FC = () => {
         downloadJsonFile({
             name: 'project 1',
             tracks,
+            bpm: Number(bpmnRef.current?.value || 100),
         }, `${new Date().getTime()}.cad-craft`)
     }
 
@@ -70,6 +71,9 @@ const TrackRecord: React.FC = () => {
             try {
                 const content = JSON.parse(e.target?.result as string);
                 if (content?.tracks) {
+                    if (bpmnRef.current) {
+                        bpmnRef.current.value = content.bpm || 100
+                    }
                     setTracks(content.tracks)
                 }
                 console.log("Arquivo carregado:", content);
