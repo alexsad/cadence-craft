@@ -9,6 +9,7 @@ const trackRecordTimeLineStyle: React.CSSProperties = {
     border: '1px solid red',
     display: 'flex',
     height: 'auto',
+    backgroundColor: '#efefef',
 }
 
 const TrackCell = styled.div`
