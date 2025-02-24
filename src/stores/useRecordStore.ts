@@ -74,11 +74,28 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
         const tracks = getTracks()
         const regularDuration = bpmToMiliseconds(bpm)
         const startDate = new Date().getTime()
-        return tracks.filter(track => track.noteIndex > 0).map((track, trackIndex) => ({
-            ...track,
-            duration: regularDuration,
-            startAt: startDate + (trackIndex * regularDuration),
-        }))
+        const silinteDuration = 50
+        return tracks
+            .filter(track => track.noteIndex > 0)
+            .map((track, trackIndex) => ({
+                ...track,
+                duration: regularDuration,
+                startAt: (startDate + (trackIndex * regularDuration)) - silinteDuration,
+            }))
+            .reduce((prev, curr) => {
+                return [
+                    ...prev,
+                    curr,
+                    {
+                        noteIndex: 0,
+                        code: '',
+                        path: '/samples/default/silent_quarter-second.wav',
+                        volume: 0,
+                        duration: silinteDuration,
+                        startAt: curr.startAt,
+                    },
+                ]
+            }, [] as INoteKey[])
     }
 }))
 
