@@ -2,30 +2,69 @@ import { create } from "zustand";
 import { INoteKey } from "../models/note-key";
 import { bpmToMiliseconds } from "../util/bpm-to-duration";
 import { cloneObject } from "../util/clone_object";
+import { genUUID } from "../util/gen_uuid";
 
 
 interface IUseRecordStore {
     _tracks: INoteKey[],
+    _bpm: number,
+    getBPM: () => number,
+    setBPM: (bpm: number) => void,
     addNote: (note: INoteKey) => void,
     getTracks: () => INoteKey[],
     clear: () => Promise<void>,
     getNormalizeTracks: (bpm: number) => INoteKey[],
     setTracks: (tracks: INoteKey[]) => void,
+    updateNote: (trackId: string, callback: (currNote: INoteKey) => INoteKey) => void,
+    isProcessing: boolean,
+    setIsProcessing: (on: boolean) => void,
 }
 
 const useRecordStore = create<IUseRecordStore>((set, get) => ({
     _tracks: [],
+    _bpm: 100,
+    isProcessing: false,
+    setIsProcessing(on: boolean) {
+        set({
+            isProcessing: on,
+        })
+    },
+    getBPM() {
+        return get()._bpm
+    },
+    setBPM(bmp: number) {
+        set({
+            _bpm: bmp,
+        })
+    },
     addNote(note: INoteKey) {
         set(curr => ({
             _tracks: [
                 ...curr._tracks,
                 {
                     ...note,
+                    id: genUUID(),
                     audioBuffer: undefined,
                 },
             ]
         }))
     },
+    updateNote(trackId: string, callback: (currNote: INoteKey) => INoteKey) {
+        const { _tracks } = get()
+        const trackIndex = _tracks.findIndex(item => item.id === trackId)
+        console.log('track:', trackIndex)
+        if (trackIndex > -1 && _tracks[trackIndex]) {
+            _tracks[trackIndex] = {
+                ...callback(_tracks[trackIndex])
+            }
+            set({
+                _tracks: [
+                    ..._tracks,
+                ]
+            })
+        }
+    },
+
     setTracks(tracks: INoteKey[]) {
         set({
             _tracks: tracks,
@@ -50,7 +89,6 @@ const useRecordStore = create<IUseRecordStore>((set, get) => ({
                     const nextStartAt = startAt + curr.duration
                     const nextTrackStartAt = (nextTrack.startAt - firstNote.startAt)
                     const duration = nextTrackStartAt - nextStartAt
-
                     prev.push({
                         noteIndex: 0,
                         code: '',

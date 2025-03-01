@@ -1,9 +1,8 @@
-import classNames from "classnames"
-import styled from "styled-components"
 import { useNotesStore } from "../../stores/useNotesStore"
 import { useRecordStore } from "../../stores/useRecordStore"
 import { Flex } from "../../ui/flex"
 import { createMatrix } from "../../util/create-matrix"
+import { TrackCell } from "./TrackRecordTimeItem"
 
 const trackRecordTimeLineStyle: React.CSSProperties = {
     border: '1px solid red',
@@ -11,27 +10,6 @@ const trackRecordTimeLineStyle: React.CSSProperties = {
     height: 'auto',
     backgroundColor: '#efefef',
 }
-
-const TrackCell = styled.div`
-    height: 10px;
-    width: 10px;
-    font-size: .5rem;
-    text-align: center;
-    position: relative;
-    display: block;
-    border-bottom: 1px solid #333;
-
-    &.is-full::after {
-        content: "";
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        top: 2px;
-        left: 2px;
-        background-color: #000000;
-        border-radius: 50%;
-    }
-`
 
 const trackRecordContentStyle: React.CSSProperties = {
     border: '1px solid green',
@@ -42,20 +20,28 @@ const trackRecordContentStyle: React.CSSProperties = {
 }
 
 const TrackRecordTimeLine: React.FC = () => {
-    const { getNormalizeTracks } = useRecordStore.getState()
-    const tracks = useRecordStore(state => state._tracks)
+    const tracks = useRecordStore().getTracks()
     const notes = useNotesStore.getState().getNotes()
     const [firstNote] = notes
     const baseNoteIndex = firstNote.noteIndex
     const maxRow = notes.length
     const maxCol = tracks.length + 1
-    const matrix = createMatrix<number>(maxCol, maxRow, 0)
+    const matrix = createMatrix<{
+        duration: number,
+        trackId: string,
+    }>(maxCol, maxRow, {
+        duration: 0,
+        trackId: '',
+    })
 
-    getNormalizeTracks(100).forEach((item, index) => {
+    tracks.forEach((item, index) => {
         const rowIndex = item.noteIndex - baseNoteIndex
         const invertedIndex = Math.abs(rowIndex - (maxRow - 1))
         if (matrix[index] && invertedIndex > -1 && invertedIndex <= maxRow) {
-            matrix[index][invertedIndex] = 1
+            matrix[index][invertedIndex] = {
+                duration: item.duration,
+                trackId: item.id || '',
+            }
         }
     })
 
@@ -66,19 +52,20 @@ const TrackRecordTimeLine: React.FC = () => {
             <Flex
                 align="center"
                 style={trackRecordContentStyle}
+                gap="3px"
             >
                 {matrix.map((row, index) => (
                     <Flex
                         key={index}
                         vertical
+                        gap="2px"
                     >
-                        {row.map((col, colIndex) => (
+                        {row.map((item, colIndex) => (
                             <TrackCell
                                 key={`${index}_${colIndex}`}
-                                className={classNames({
-                                    'is-full': col !== 0
-                                })}
-                            ></TrackCell>
+                                duration={item.duration}
+                                trackId={item.trackId}
+                            />
                         ))}
                     </Flex>
                 ))}

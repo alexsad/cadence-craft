@@ -12,6 +12,7 @@ const keyNoteStyle: React.CSSProperties = {
     position: 'relative',
     cursor: 'pointer',
     color: '#000',
+    userSelect: 'none',
 }
 
 const contantNoteStyle: React.CSSProperties = {
@@ -24,6 +25,7 @@ const contantNoteStyle: React.CSSProperties = {
     display: 'flex',
     justifyContent: 'end',
     flexDirection: 'column',
+    userSelect: 'none',
 }
 
 const adjacentNoteStyle: React.CSSProperties = {
@@ -39,6 +41,7 @@ const adjacentNoteStyle: React.CSSProperties = {
     alignItems: 'center',
     justifyContent: 'end',
     color: '#fff',
+    userSelect: 'none',
 }
 
 const rightNoteStyle: React.CSSProperties = {
@@ -51,37 +54,18 @@ const leftNoteStyle: React.CSSProperties = {
 
 const SubKeyBoardNote: React.FC<{
     noteItem: INoteKey,
-    onRelease: (note: INoteKey) => void,
     style?: React.CSSProperties,
 }> = ({
     style,
     noteItem,
-    onRelease,
 }) => {
-        const { setCurrNote } = useNoteStore.getState()
-
-        const stop = async () => {
-            onRelease(noteItem)
-        }
-
-        const playKey = async (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            // evt.preventDefault()
-            evt.stopPropagation()
-            setCurrNote({
-                ...noteItem,
-                audioBuffer: undefined,
-                startAt: new Date().getTime(),
-            })
-        }
-
         return (
             <div
                 style={{
                     ...adjacentNoteStyle,
                     ...style,
                 }}
-                onTouchStart={playKey}
-                onTouchEnd={stop}
+                data-note-index={noteItem.noteIndex}
             >
                 <span>
                     {noteItem.code}
@@ -101,14 +85,21 @@ const PianoKeyBoardNote: React.FC<{
 
     const { setCurrNote, getCurrNote } = useNoteStore.getState()
 
-    const playKey = (note: INoteKey) => async (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        // evt.preventDefault()
+    const playKey = async (evt: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         evt.stopPropagation()
-        setCurrNote({
-            ...note,
-            audioBuffer: undefined,
-            startAt: new Date().getTime(),
-        })
+        let target: HTMLDivElement | null = (evt.target as HTMLDivElement)
+        if (!(evt.target as HTMLDivElement).hasAttribute('data-note-index')) {
+            target = (evt.target as HTMLDivElement).parentNode as HTMLDivElement
+        }
+        const noteIndexAtt = Number(target.getAttribute('data-note-index') || '0')
+        console.log('note:', noteIndexAtt)
+        if (noteIndexAtt > 0) {
+            setCurrNote({
+                ...(props?.rightSlot?.noteIndex === noteIndexAtt ? props.rightSlot : props.noteItem),
+                audioBuffer: undefined,
+                startAt: new Date().getTime(),
+            })
+        }
     }
 
     const onRelease = () => {
@@ -122,21 +113,26 @@ const PianoKeyBoardNote: React.FC<{
         setCurrNote(undefined)
     }
 
+    const disableMenuContext = (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        evt.preventDefault()
+    }
+
     return (
         <Flex
             style={keyNoteStyle}
+            onContextMenu={disableMenuContext}
+            onTouchStart={playKey}
+            onTouchEnd={onRelease}
         >
             {props.leftSlot && (
                 <SubKeyBoardNote
                     style={leftNoteStyle}
                     noteItem={props.leftSlot}
-                    onRelease={onRelease}
                 />
             )}
             <div
-                onTouchStart={playKey(props.noteItem)}
-                onTouchEnd={onRelease}
                 style={contantNoteStyle}
+                data-note-index={props.noteItem.noteIndex}
             >
                 <span>
                     {props.noteItem.code}
@@ -149,7 +145,6 @@ const PianoKeyBoardNote: React.FC<{
                 <SubKeyBoardNote
                     style={rightNoteStyle}
                     noteItem={props.rightSlot}
-                    onRelease={onRelease}
                 />
             )}
         </Flex>

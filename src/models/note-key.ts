@@ -1,4 +1,5 @@
 export type INoteKey = {
+    id?: string,
     noteIndex: number,
     code: string,
     path: string,
