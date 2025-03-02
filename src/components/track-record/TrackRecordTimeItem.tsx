@@ -2,7 +2,6 @@ import classNames from "classnames"
 import styled from "styled-components"
 import { useDebouncedCallback } from "use-debounce"
 import { useRecordStore } from "../../stores/useRecordStore"
-import { getNoteDurationByIndex } from "../../util/bpm-to-duration"
 
 const TrackCellBox = styled.div`
     height: 8px;
@@ -50,26 +49,23 @@ const TrackRangeCell = styled.input`
 `
 
 const TrackCell: React.FC<{
-    duration: number,
     trackId: string,
-}> = ({ duration, trackId }) => {
-    const { updateNote, getBPM } = useRecordStore.getState()
-
-    const isFull = duration !== 0
-    const width = `${isFull ? Math.max(duration * .03, 25) : 0}px`
+    noteValue: number,
+}> = ({ noteValue, trackId }) => {
+    const { updateNote } = useRecordStore.getState()
+    const isFull = !!trackId
+    const width = `${isFull ? Math.max(noteValue * 21, 20) : 0}px`
 
     const onChangeDebounced = useDebouncedCallback((vlw: number) => {
-        console.log('duration:', getNoteDurationByIndex(getBPM(), vlw))
         updateNote(trackId, noteState => ({
             ...noteState,
-            duration: getNoteDurationByIndex(getBPM(), vlw)
+            noteValue: vlw,
         }))
     }, 300)
 
     const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         onChangeDebounced(Number(evt.target.value))
     }
-
 
     return (
         <TrackCellBox
@@ -87,6 +83,7 @@ const TrackCell: React.FC<{
                     min={0}
                     step={1}
                     onChange={onChange}
+                    defaultValue={noteValue}
                 />
             )}
         </TrackCellBox>

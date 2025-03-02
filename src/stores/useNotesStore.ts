@@ -18,6 +18,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 60,
+            noteValue: 2,
         },
         {
             code: 'c#1',
@@ -26,6 +27,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 61,
+            noteValue: 2,
         },
         {
             code: 'd1',
@@ -34,6 +36,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 62,
+            noteValue: 2,
         },
         {
             code: 'd#1',
@@ -42,6 +45,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 63,
+            noteValue: 2,
         },
         {
             code: 'e1',
@@ -50,6 +54,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 64,
+            noteValue: 2,
         },
         {
             code: 'f1',
@@ -58,6 +63,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 65,
+            noteValue: 2,
         },
         {
             code: 'f#1',
@@ -66,6 +72,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 66,
+            noteValue: 2,
         },
         {
             code: 'g1',
@@ -74,6 +81,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 67,
+            noteValue: 2,
         },
         {
             code: 'g#1',
@@ -82,6 +90,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 68,
+            noteValue: 2,
         },
         {
             code: 'a1',
@@ -90,6 +99,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 69,
+            noteValue: 2,
         },
         {
             code: 'a#1',
@@ -98,6 +108,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 70,
+            noteValue: 2,
         },
         {
             code: 'b1',
@@ -106,6 +117,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 71,
+            noteValue: 2,
         },
         {
             code: 'c2',
@@ -114,6 +126,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 72,
+            noteValue: 2,
         },
         {
             code: 'c#2',
@@ -122,6 +135,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 73,
+            noteValue: 2,
         },
         {
             code: 'd2',
@@ -130,6 +144,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 74,
+            noteValue: 2,
         },
         {
             code: 'd#2',
@@ -138,6 +153,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 75,
+            noteValue: 2,
         },
         {
             code: 'e2',
@@ -146,6 +162,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 76,
+            noteValue: 2,
         },
         {
             code: 'f2',
@@ -154,6 +171,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 77,
+            noteValue: 2,
         },
         {
             code: 'f#2',
@@ -162,6 +180,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 78,
+            noteValue: 2,
         },
         {
             code: 'g2',
@@ -170,6 +189,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 79,
+            noteValue: 2,
         },
         {
             code: 'g#2',
@@ -178,6 +198,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 80,
+            noteValue: 2,
         },
         {
             code: 'a2',
@@ -186,6 +207,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 81,
+            noteValue: 2,
         },
         {
             code: 'a#2',
@@ -194,6 +216,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 82,
+            noteValue: 2,
         },
         {
             code: 'b2',
@@ -202,6 +225,7 @@ const useNotesStore = create<IUseNotesStore>((set, get) => ({
             startAt: 0,
             volume: 1,
             noteIndex: 83,
+            noteValue: 2,
         },
         // {
         //     code: '_',

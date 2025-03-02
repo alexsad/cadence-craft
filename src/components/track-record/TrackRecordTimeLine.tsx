@@ -27,10 +27,10 @@ const TrackRecordTimeLine: React.FC = () => {
     const maxRow = notes.length
     const maxCol = tracks.length + 1
     const matrix = createMatrix<{
-        duration: number,
+        noteValue: number,
         trackId: string,
     }>(maxCol, maxRow, {
-        duration: 0,
+        noteValue: 0,
         trackId: '',
     })
 
@@ -39,7 +39,7 @@ const TrackRecordTimeLine: React.FC = () => {
         const invertedIndex = Math.abs(rowIndex - (maxRow - 1))
         if (matrix[index] && invertedIndex > -1 && invertedIndex <= maxRow) {
             matrix[index][invertedIndex] = {
-                duration: item.duration,
+                noteValue: item.noteValue,
                 trackId: item.id || '',
             }
         }
@@ -63,7 +63,7 @@ const TrackRecordTimeLine: React.FC = () => {
                         {row.map((item, colIndex) => (
                             <TrackCell
                                 key={`${index}_${colIndex}`}
-                                duration={item.duration}
+                                noteValue={item.noteValue}
                                 trackId={item.trackId}
                             />
                         ))}

@@ -92,7 +92,6 @@ const PianoKeyBoardNote: React.FC<{
             target = (evt.target as HTMLDivElement).parentNode as HTMLDivElement
         }
         const noteIndexAtt = Number(target.getAttribute('data-note-index') || '0')
-        console.log('note:', noteIndexAtt)
         if (noteIndexAtt > 0) {
             setCurrNote({
                 ...(props?.rightSlot?.noteIndex === noteIndexAtt ? props.rightSlot : props.noteItem),

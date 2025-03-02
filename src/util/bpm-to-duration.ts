@@ -5,13 +5,34 @@ const bpmToMiliseconds = (bpm: number) => {
     return (60 * 1000) / bpm
 }
 
-function getNoteDurationByIndex(bpm: number, indice: number): number {
-    if (indice > 6 || indice < 0) {
+function getNoteDurationByIndex(bpm: number, index: number): number {
+    if (index > 6 || index < 0) {
         return 0
     }
-    const nota = 4 * Math.pow(0.5, 6 - indice);
-    return (60 / bpm) * nota * 1000;
+    const note = 4 * Math.pow(0.5, 6 - index);
+    return (60 / bpm) * note * 1000;
 }
 
-export { bpmToMiliseconds, getNoteDurationByIndex };
+function findClosestIndex(bpm: number, durationMs: number): number {
+    const beatDuration = 60000 / bpm; // Duration of 1 beat in ms
+
+    let closestIndex = 0;
+    let smallestDifference = Infinity;
+
+    for (let i = 0; i <= 6; i++) {
+        const noteValue = 4 * Math.pow(0.5, i);
+        const noteDuration = beatDuration * noteValue; // Note duration in ms
+
+        const difference = Math.abs(noteDuration - durationMs);
+        if (difference < smallestDifference) {
+            smallestDifference = difference;
+            closestIndex = i;
+        }
+    }
+
+    return closestIndex;
+}
+
+
+export { bpmToMiliseconds, findClosestIndex, getNoteDurationByIndex };
 

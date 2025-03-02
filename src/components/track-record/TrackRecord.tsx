@@ -89,16 +89,15 @@ const UploadProjectBtn: React.FC = () => {
 }
 
 const TrackRecordActions: React.FC = () => {
-    const { addNote, getTracks, clear, getNormalizeTracks, setTracks, getBPM, setIsProcessing } = useRecordStore.getState()
+    const { addNote, getTracks, clear, getBPM, setIsProcessing } = useRecordStore.getState()
     const tracksCount = useRecordStore(state => state._tracks.length)
     const isProcessing = useRecordStore(state => state.isProcessing)
     const audioRef = useRef<HTMLAudioElement>(null)
 
-    const playRecord = (type: 'RAW' | 'NORMALIZED') => async () => {
+    const playRecord = async () => {
         setIsProcessing(true)
         try {
-            const bpm = getBPM()
-            const tracks = type === 'RAW' ? getTracks() : getNormalizeTracks(bpm)
+            const tracks = getTracks()
 
             const blob = await concatenateAudio(
                 tracks
@@ -116,12 +115,6 @@ const TrackRecordActions: React.FC = () => {
             console.error(error)
         }
 
-        setIsProcessing(false)
-    }
-
-    const normalize = async () => {
-        setIsProcessing(true)
-        await setTracks(getNormalizeTracks(getBPM()))
         setIsProcessing(false)
     }
 
@@ -153,9 +146,7 @@ const TrackRecordActions: React.FC = () => {
     return (
         <Flex vertical>
             <Flex gap=".5rem" padding=".5rem 0" >
-                <button onClick={playRecord('RAW')} disabled={isProcessing || tracksCount === 0}>Play</button>
-                <button onClick={playRecord('NORMALIZED')} disabled={isProcessing || tracksCount === 0}>Play Normalized</button>
-                <button onClick={normalize} disabled={isProcessing || tracksCount === 0}>Normalize</button>
+                <button onClick={playRecord} disabled={isProcessing || tracksCount === 0}>Play</button>
                 <button onClick={clearTracks} disabled={isProcessing || tracksCount === 0}>Clear</button>
                 <button onClick={exportTracks} disabled={isProcessing || tracksCount === 0}>Export project</button>
                 <UploadProjectBtn />

@@ -7,4 +7,5 @@ export type INoteKey = {
     duration: number,
     startAt: number,
     audioBuffer?: AudioBuffer,
+    noteValue: number,
 }
